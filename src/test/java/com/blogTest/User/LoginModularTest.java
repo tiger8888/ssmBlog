@@ -50,12 +50,12 @@ public class LoginModularTest extends BaseTest{
 	public void testChangePassword(){
 		User user = new User("wq", "wq");
 		String newPassword = "qq";
-		User selectResult = this.userService.getUserInfo(user.getUsername());
+		User selectResult = this.userService.selectByPrimaryKey(user.getUsername());
 		if (selectResult == null) {
 			System.out.println("用户不存在");
 		}else if (selectResult.getPassword().equals(user.getPassword())) {
 			user.setPassword(newPassword);
-			int result = this.userService.updateUserInfo(user);
+			int result = this.userService.updateByPrimaryKey(user);
 			if (result > 0) {
 				System.out.println("修改密码成功");
 			}else {
