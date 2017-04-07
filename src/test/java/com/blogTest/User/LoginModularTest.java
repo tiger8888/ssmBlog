@@ -1,12 +1,12 @@
 package com.blogTest.User;
 
+import global.BaseTest;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.blog.model.User;
 import com.blog.service.UserService;
-
-import blog.BaseTest;
 
 public class LoginModularTest extends BaseTest{
 	@Autowired

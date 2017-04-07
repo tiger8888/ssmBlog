@@ -9,7 +9,7 @@ import com.blog.dao.UserMapper;
 import com.blog.model.User;
 import com.blog.service.UserService;
 
-@Service("user")
+@Service
 public class UserServiceImpl extends BaseServiceImpl<User> implements UserService{
 	@Autowired
 	private UserMapper userMapper = null;

@@ -1,4 +1,4 @@
-package blog;
+package global;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

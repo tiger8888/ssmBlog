@@ -1,4 +1,4 @@
-package com.blog.exception;
+package com.core.exception;
 
 
 @SuppressWarnings("serial")
