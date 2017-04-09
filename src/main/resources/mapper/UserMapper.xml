@@ -2,70 +2,128 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blog.dao.UserMapper">
   <resultMap id="BaseResultMap" type="com.blog.model.User">
+    <id column="userId" jdbcType="INTEGER" property="userid" />
     <id column="userName" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="nickName" jdbcType="VARCHAR" property="nickname" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
   </resultMap>
   <sql id="Base_Column_List">
-    userName, password, phone
+    userId, userName, password, nickName, phone, email
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from user_blog
-    where userName = #{username,jdbcType=VARCHAR}
+    from user_info
+    where userId = #{userid,jdbcType=INTEGER}
+      and userName = #{username,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from user_blog
-    where userName = #{username,jdbcType=VARCHAR}
+  <delete id="deleteByPrimaryKey" parameterType="com.blog.model.UserKey">
+    delete from user_info
+    where userId = #{userid,jdbcType=INTEGER}
+      and userName = #{username,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.blog.model.User">
-    insert ignore into user_blog (userName, password, phone
+    insert ignore into user_info (userId, userName, password, 
+      nickName, phone, email
       )
-    values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}
+    values (#{userid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.blog.model.User">
-    insert ignore into user_blog
+    insert ignore into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
       <if test="username != null">
         userName,
       </if>
       <if test="password != null">
         password,
       </if>
+      <if test="nickname != null">
+        nickName,
+      </if>
       <if test="phone != null">
         phone,
       </if>
+      <if test="email != null">
+        email,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.blog.model.User">
-    update user_blog
+    update user_info
     <set>
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
+      <if test="nickname != null">
+        nickName = #{nickname,jdbcType=VARCHAR},
+      </if>
       <if test="phone != null">
         phone = #{phone,jdbcType=VARCHAR},
       </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
     </set>
-    where userName = #{username,jdbcType=VARCHAR}
+    where userId = #{userid,jdbcType=INTEGER}
+      and userName = #{username,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.blog.model.User">
-    update user_blog
+    update user_info
     set password = #{password,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR}
-    where userName = #{username,jdbcType=VARCHAR}
+      nickName = #{nickname,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR}
+    where userId = #{userid,jdbcType=INTEGER}
+      and userName = #{username,jdbcType=VARCHAR}
   </update>
+  
+  <!-- 自己需求写的 -->
+  <select id="selectByUserId" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where userId = #{userid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByUserName" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where userName = #{username,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByUserId" parameterType="com.blog.model.UserKey">
+    delete from user_info
+    where userId = #{userid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByUserName" parameterType="com.blog.model.UserKey">
+    delete from user_info
+    where userName = #{username,jdbcType=VARCHAR}
+  </delete>
 </mapper>

@@ -4,14 +4,24 @@ import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 
+import com.blog.model.UserKey;
+
 public interface BaseMapper<T> {
-	int deleteByPrimaryKey(String username);
+	int deleteByPrimaryKey(UserKey key);
+	
+	int deleteByUserId(UserKey key);
+	
+	int deleteByUserName(UserKey key);
 
     int insert(T record);
 
     int insertSelective(T record);
 
-    T selectByPrimaryKey(String username);
+    T selectByPrimaryKey(UserKey key);
+    
+    T selectByUserId(UserKey key);
+    
+    T selectByUserName(UserKey key);
 
     int updateByPrimaryKeySelective(T record);
 

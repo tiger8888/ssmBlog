@@ -12,10 +12,10 @@ public class LoginModularTest extends BaseTest{
 	@Autowired
 	private UserService userService = null;
 	
-	/*@Test
+	@Test
 	public void testLogin(){
-		User user = new User("wwq", "wq");
-		User selectResult = this.userService.getUserInfo(user.getUsername());
+		User user = new User("wwq", "wq","lxt");
+		User selectResult = this.userService.selectByPrimaryKey(user.getUsername());
 		
 		if (selectResult == null) {
 			System.out.println("用户不存在");
@@ -25,7 +25,7 @@ public class LoginModularTest extends BaseTest{
 			System.out.println("密码错误");
 		}
 		
-	}*/
+	}
 	/*
 	@Test
 	public void testRegister(){

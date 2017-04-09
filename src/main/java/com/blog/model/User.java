@@ -1,56 +1,80 @@
 package com.blog.model;
 
-public class User {
-    @Override
-	public String toString() {
-		return "User [username=" + username + ", password=" + password
-				+ ", phone=" + phone + "]";
-	}
+public class User extends UserKey {
+	/**
+	 * 密码
+	 */
+	 private String password;
+	    /**
+	     * 昵称， 自动生成，后面可修改
+	     */
+	 private String nickname;
+	    /**
+	     * 手机号码
+	     */
+	 private String phone;
+	    /**
+	     * 邮箱
+	     */
+	 private String email;
 
-	public User() {
-		super();
-	}
-
-	private String username;
-
-    private String password;
-
-    private String phone;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
-    }
-
+	 /**
+	  * toString、getter setter and 构造方法
+	  * 
+	  * @return
+	  */
+	 
+	 
     public String getPassword() {
         return password;
     }
+    
+    public User() {
+		super();
+	}
 
-    public void setPassword(String password) {
+	public User(String username,String password, String nickname) {
+		super(username);
+		
+		this.password = password;
+		this.nickname = nickname;
+	}
+	public User(String username,String password) {
+		super(username);
+		
+		this.password = password;
+	}
+	@Override
+	public String toString() {
+		return "User [userId=" + super.getUserid() + ", username=" +super.getUsername() + ", password=" + password + ", nickname=" + nickname
+				+ ", phone=" + phone + ", email=" + email + "]";
+	}
+
+	public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname == null ? null : nickname.trim();
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public User(String username, String password) {
-		super();
-		this.username = username;
-		this.password = password;
-	}
-
-	public User(String username, String password, String phone) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.phone = phone;
-	}
-
-	public void setPhone(String phone) {
+    public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
     }
 }
