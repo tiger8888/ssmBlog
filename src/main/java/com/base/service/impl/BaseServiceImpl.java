@@ -16,22 +16,6 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 	}
 	
 	/**
-	 * 根据 userId  删除数据
-	 */
-	@Override
-	public int deleteByUserId(UserKey key){
-		return this.getBaseMapper().deleteByUserId(key);
-	}
-	
-	/**
-	 * userName 删除数据
-	 */
-	@Override
-	public int deleteByUserName(UserKey key){
-		return this.getBaseMapper().deleteByUserName(key);
-	}
-	
-	/**
 	 * 插入数据
 	 */
 	@Override
@@ -51,23 +35,6 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
     public T selectByPrimaryKey(UserKey key){
 		return this.getBaseMapper().selectByPrimaryKey(key);
 	}
-	
-	/**
-	 * 根据 userId 查找数据
-	 */
-	@Override
-	public T selectByUserId(UserKey key){
-		return this.getBaseMapper().selectByUserId(key);
-	}
-    
-	/**
-	 * userName 查找数据
-	 */
-	@Override
-	public T selectByUserName(UserKey key){
-    	return this.getBaseMapper().selectByUserName(key);
-    }
-	
 	/**
 	 * 更新数据
 	 */
@@ -76,8 +43,4 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 		return this.getBaseMapper().updateByPrimaryKeySelective(record);
 	}
 
-	@Override
-	public int updateByPrimaryKey(T record){
-		return this.getBaseMapper().updateByPrimaryKey(record);
-	}
 }

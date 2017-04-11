@@ -19,5 +19,4 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 		// TODO Auto-generated method stub
 		return userMapper;
 	}
-
 }

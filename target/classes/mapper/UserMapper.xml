@@ -12,18 +12,7 @@
   <sql id="Base_Column_List">
     userId, userName, password, nickName, phone, email
   </sql>
-  <select id="selectByPrimaryKey" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from user_info
-    where userId = #{userid,jdbcType=INTEGER}
-      and userName = #{username,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.blog.model.UserKey">
-    delete from user_info
-    where userId = #{userid,jdbcType=INTEGER}
-      and userName = #{username,jdbcType=VARCHAR}
-  </delete>
+  <!-- 添加 -->
   <insert id="insert" parameterType="com.blog.model.User">
     insert ignore into user_info (userId, userName, password, 
       nickName, phone, email
@@ -75,6 +64,34 @@
       </if>
     </trim>
   </insert>
+
+  <!-- 自己需求写的 -->
+  <!-- 查找 -->
+
+  <select id="selectByPrimaryKey" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where 1=1
+    <if test=" username != null">
+    and userName = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test=" userid != null">
+    and userId = #{userid,jdbcType=INTEGER}
+    </if>
+  </select>
+  <!-- 删除 -->
+  <delete id="deleteByPrimaryKey" parameterType="com.blog.model.UserKey">
+    delete from user_info
+    where 1=1
+    <if test=" username != null">
+    and userName = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test=" userid != null">
+    and userId = #{userid,jdbcType=INTEGER}
+    </if>
+  </delete>
+  <!-- 更新 -->
   <update id="updateByPrimaryKeySelective" parameterType="com.blog.model.User">
     update user_info
     <set>
@@ -91,39 +108,13 @@
         email = #{email,jdbcType=VARCHAR},
       </if>
     </set>
-    where userId = #{userid,jdbcType=INTEGER}
-      and userName = #{username,jdbcType=VARCHAR}
+    where 1=1
+    <if test="userid != null">
+    and	userId = #{userid,jdbcType=INTEGER}
+    </if>
+    <if test="username != null">
+    and	userName = #{username,jdbcType=VARCHAR}
+    </if>
+    
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.blog.model.User">
-    update user_info
-    set password = #{password,jdbcType=VARCHAR},
-      nickName = #{nickname,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR}
-    where userId = #{userid,jdbcType=INTEGER}
-      and userName = #{username,jdbcType=VARCHAR}
-  </update>
-  
-  <!-- 自己需求写的 -->
-  <select id="selectByUserId" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from user_info
-    where userId = #{userid,jdbcType=INTEGER}
-  </select>
-  
-  <select id="selectByUserName" parameterType="com.blog.model.UserKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from user_info
-    where userName = #{username,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByUserId" parameterType="com.blog.model.UserKey">
-    delete from user_info
-    where userId = #{userid,jdbcType=INTEGER}
-  </delete>
-  <delete id="deleteByUserName" parameterType="com.blog.model.UserKey">
-    delete from user_info
-    where userName = #{username,jdbcType=VARCHAR}
-  </delete>
 </mapper>

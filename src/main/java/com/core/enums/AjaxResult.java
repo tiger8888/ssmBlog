@@ -10,7 +10,7 @@ public class AjaxResult {
 	/**
 	 * 请求返回信息,默认为执行成功
 	 */
-	private String message = ActionConstants.DEFAULT_SUCCESS_RETURNMSG;
+	private String message = ResultCode.SUCCESS.getMessage();
 	
 	/**
 	 * 请求结果数据
@@ -21,8 +21,14 @@ public class AjaxResult {
 	 * 获取正确结果
 	 * @return
 	 */
+	public static AjaxResult getOK(String message,Object data){
+		AjaxResult ajaxResult = new AjaxResult(message, data);
+		return ajaxResult;
+	}
+	
 	public static AjaxResult getOK(Object data){
-		return new AjaxResult(data);
+		AjaxResult ajaxResult = new AjaxResult(data);
+		return ajaxResult;
 	}
 	
 	public static AjaxResult getOK(){
@@ -45,7 +51,7 @@ public class AjaxResult {
 	 * @return
 	 */
 	public static AjaxResult getError(ResultCode resultCode) {
-		return getError(resultCode,ActionConstants.DEFAULT_FAILD_RETURNMEG,null);
+		return getError(resultCode,resultCode.getMessage(),null);
 	}
 	
 	/**
@@ -54,8 +60,8 @@ public class AjaxResult {
 	 * @param data
 	 * @return
 	 */
-	public static AjaxResult getError(ResultCode resultCode,Object data){
-		return getError(resultCode,ActionConstants.DEFAULT_FAILD_RETURNMEG,data);
+	public static AjaxResult getError(ResultCode resultCode,String message){
+		return getError(resultCode,message,null);
 	}
 	/**
 	 * getter、setter、toString 构造方法
@@ -103,6 +109,11 @@ public class AjaxResult {
 		this.data = data;
 	}
 	
+	public AjaxResult(String message,Object data){
+		super();
+		this.message = message;
+		this.data = data;
+	}
 	/**
 	 * 
 	 * 

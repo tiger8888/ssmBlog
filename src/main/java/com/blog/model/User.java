@@ -32,18 +32,18 @@ public class User extends UserKey {
     public User() {
 		super();
 	}
-
-	public User(String username,String password, String nickname) {
-		super(username);
+    public User(String password, String nickname) {
+		super();
 		
 		this.password = password;
 		this.nickname = nickname;
 	}
-	public User(String username,String password) {
-		super(username);
+	public User(String password) {
+		super();
 		
 		this.password = password;
 	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + super.getUserid() + ", username=" +super.getUsername() + ", password=" + password + ", nickname=" + nickname
