@@ -40,7 +40,7 @@ public enum ResultCode {
 		return code;
 	}
 
-	private ResultCode(String message, String code) {
+	private ResultCode( String code,String message) {
 		this.message = message;
 		this.code = code;
 	}

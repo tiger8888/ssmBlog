@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.core.exception.BlogException;
-import com.core.util.catgetory.StringUtil;
+import com.core.util.base.StringUtils;
 
 public class BaseController {
 	private static Logger logger = Logger.getLogger(BaseController.class);
@@ -17,9 +17,9 @@ public class BaseController {
 	 */
 	protected Integer getUserId(HttpServletRequest request){
 		String userIdString = request.getHeader("userId");
-		if (!StringUtil.isEmpty(userIdString)) {
+		if (!StringUtils.isEmpty(userIdString)) {
 			try {
-				Integer userId = StringUtil.toInt(userIdString);
+				Integer userId = StringUtils.toInt(userIdString);
 				return userId;
 			} catch (NumberFormatException e) {
 				// TODO: handle exception

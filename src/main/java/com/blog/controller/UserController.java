@@ -2,19 +2,11 @@ package com.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-
-
-
-
-
-
-
-import org.springframework.web.servlet.ModelAndView;
-
-import com.alibaba.fastjson.JSON;
 import com.base.controller.BaseController;
 import com.blog.model.User;
 import com.blog.model.UserKey;
@@ -22,6 +14,8 @@ import com.blog.service.UserService;
 import com.core.enums.AjaxResult;
 import com.core.enums.ResultCode;
 import com.core.exception.BlogException;
+import com.core.util.base.RegexUtils;
+import com.core.util.base.StringUtils;
 
 @Controller("loginController")
 @RequestMapping("/user")
@@ -36,37 +30,22 @@ public class UserController extends BaseController{
 	 * @return
 	 * @throws BlogException
 	 */
-	@RequestMapping(value = "/login",method = RequestMethod.GET)
-	public ModelAndView userLogin(String userName,String password) throws BlogException{
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("login");
-		if (userName == null || userName.equals("")) {
-			AjaxResult.getError(ResultCode.InfoException, "用户名为空");
-		}else if (password == null || password.equals("")) {
-			AjaxResult.getError(ResultCode.InfoException, "密码为空");
+	@RequestMapping(value = "/login",method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public AjaxResult userLogin(@RequestBody User user) throws BlogException{
+		if (StringUtils.isEmpty(user.getUsername())) {
+			return AjaxResult.getError(ResultCode.InfoException, "用户名为空");
+		}else if (StringUtils.isEmpty(user.getPassword())) {
+			return AjaxResult.getError(ResultCode.InfoException, "密码为空");
 		}
-		User user = this.userService.selectByPrimaryKey(new UserKey(userName));
-		if (user == null) {
-			//return AjaxResult.getError(ResultCode.InfoException, "用户名不存在");
-		}else if (!password.equals(user.getPassword())) {
-			//return AjaxResult.getError(ResultCode.InfoException, "密码不正确");
+		User newUser = this.userService.selectByPrimaryKey(new UserKey(user.getUsername()));
+		if (newUser == null) {
+			return AjaxResult.getError(ResultCode.InfoException, "用户名不存在");
+		}else if (!user.getPassword().equals(newUser.getPassword())) {
+			return AjaxResult.getError(ResultCode.InfoException, "密码不正确");
 		}
-		
-		modelAndView.addObject("ajaxw", JSON.toJSONString(AjaxResult.getOK(user)));
-		
-		return modelAndView;
-		//return AjaxResult.getOK(user);
+		return AjaxResult.getOK(newUser);
 	}
-	/*
-	public AjaxResult userLogin(String userName,String password) throws BlogException{
-		User user = this.userService.selectByPrimaryKey(new UserKey(userName));
-		if (user == null) {
-			return AjaxResult.getError(ResultCode.InfoException, "用户名不存在", null);
-		}else if (!password.equals(user.getPassword())) {
-			return AjaxResult.getError(ResultCode.InfoException, "密码不正确", null);
-		}
-		return AjaxResult.getOK(user);
-	}*/
 	
 	/**
 	 * 注册
@@ -76,18 +55,25 @@ public class UserController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
+	@ResponseBody
 	public AjaxResult userRegister(String userName,String password,String nickName)throws BlogException{
+		if (StringUtils.isEmpty(userName)) {
+			return AjaxResult.getError(ResultCode.InfoException, "用户名为空");
+		}else if (StringUtils.isEmpty(password)) {
+			return AjaxResult.getError(ResultCode.InfoException, "密码为空");
+		}
 		User user = this.userService.selectByPrimaryKey(new UserKey(userName));
+		
 		if (user != null) {
-			return AjaxResult.getError(ResultCode.InfoException, "用户名已存在", null);
+			return AjaxResult.getError(ResultCode.InfoException, "用户名已存在");
 		}
 		User registerUser = new User(password, nickName);
 		registerUser.setUsername(userName);
 		int result = this.userService.insertSelective(registerUser);
 		if (result <= 0) {
-			return AjaxResult.getError(ResultCode.DBException, "注册失败", null);
+			return AjaxResult.getError(ResultCode.DBException, "注册失败");
 		}
-		return AjaxResult.getOK(user);
+		return AjaxResult.getOK(this.userService.selectByPrimaryKey(new UserKey(userName)));
 	}
 	
 	/**
@@ -99,20 +85,31 @@ public class UserController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "/changePassword",method = RequestMethod.POST)
-	public AjaxResult userChangePassword(Integer userId,String userName,String oldPassword,String newPassword)throws BlogException{
+	@ResponseBody
+	public AjaxResult userChangePassword(String userId,String userName,String oldPassword,String newPassword)throws BlogException{
+		if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(userId)) {
+			return AjaxResult.getError(ResultCode.InfoException, "用户名为空");
+		}else if (!StringUtils.isEmpty(userId)) {
+			if (!RegexUtils.isInteger(userId)) {
+				return AjaxResult.getError(ResultCode.InfoException, "用户ID格式错误");
+			}
+		}else if (StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(newPassword)) {
+			return AjaxResult.getError(ResultCode.InfoException, "密码为空");
+		}
 		UserKey userKey = new UserKey();
-		userKey.setUserid(userId); 
+		userKey.setUserid(StringUtils.isEmpty(userId) ? null : Integer.parseInt(userId)); 
+		userKey.setUsername(StringUtils.isEmpty(userName) ? null :userName);
 		User user = this.userService.selectByPrimaryKey(userKey);
 		if (user == null) {
-			return AjaxResult.getError(ResultCode.InfoException, "用户名不存在", null);
+			return AjaxResult.getError(ResultCode.InfoException, "用户名不存在");
 		}
 		if (!user.getPassword().equals(oldPassword)) {
-			return AjaxResult.getError(ResultCode.InfoException, "原密码错误", null);
+			return AjaxResult.getError(ResultCode.InfoException, "原密码错误");
 		}
 		user.setPassword(newPassword);
 		int result = this.userService.updateByPrimaryKeySelective(user);
 		if (result <= 0) {
-			return AjaxResult.getError(ResultCode.DBException, "更新失败", null);
+			return AjaxResult.getError(ResultCode.DBException, "更新失败");
 		}
 		return AjaxResult.getOK(user);
 	}
@@ -126,12 +123,27 @@ public class UserController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "/forgotPassword",method = RequestMethod.POST)
-	public AjaxResult userForgotPassword(Integer userId,String userName,Integer verification,String newPassword)throws BlogException{
+	public AjaxResult userForgotPassword(String userId,String userName,String verification,String newPassword)throws BlogException{
+		if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(userId)) {
+			return AjaxResult.getError(ResultCode.InfoException, "用户名为空");
+		}else if (!StringUtils.isEmpty(userId)) {
+			if (!RegexUtils.isInteger(userId)) {
+				return AjaxResult.getError(ResultCode.InfoException, "用户ID格式错误");
+			}	
+		}
+		else if (StringUtils.isEmpty(verification)) {
+			return AjaxResult.getError(ResultCode.InfoException, "验证码为空");
+		}else if (StringUtils.isEmpty(newPassword)) {
+			return AjaxResult.getError(ResultCode.InfoException, "密码为空");
+		}
 		UserKey userKey = new UserKey();
+		
+		userKey.setUserid(StringUtils.isEmpty(userId) ? null : Integer.parseInt(userId)); 
+		userKey.setUsername(StringUtils.isEmpty(userName) ? null :userName);
 		
 		User user = this.userService.selectByPrimaryKey(userKey);
 		if (user == null) {
-			return AjaxResult.getError(ResultCode.InfoException, "用户名不存在", null);
+			return AjaxResult.getError(ResultCode.InfoException, "用户名不存在");
 		}
 		/**
 		 * 验证码验证没做
@@ -139,7 +151,7 @@ public class UserController extends BaseController{
 		user.setPassword(newPassword);
 		int result = this.userService.updateByPrimaryKeySelective(user);
 		if (result <= 0) {
-			return AjaxResult.getError(ResultCode.DBException, "更新失败", null);
+			return AjaxResult.getError(ResultCode.DBException, "更新失败");
 		}
 		return AjaxResult.getOK(user);
 	}
